@@ -1,4 +1,4 @@
-package src.logica;
+package logica;
 
 public class Manejador {
 

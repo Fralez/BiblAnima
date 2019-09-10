@@ -2,25 +2,20 @@ package logica;
 
 import java.util.Date;
 
-public class Prestamo {
+public class Notificacion {
 	private int idGenerator = 0;
 	
 	private int id;
 	private Date fechaSolicitado;
 	private Date fechaDevolucion;
-	private Usuario usuario;
-	private int idLibro;
 	
-	public Prestamo(Date fechaSolicitado, Date fechaDevolucion, Usuario usuario, int idLibro) {
+	public Notificacion(Date fechaSolicitado, Date fechaDevolucion) {
 		this.idGenerator++;
 		
 		this.id = this.idGenerator;
+		
 		this.fechaSolicitado = fechaSolicitado;
 		this.fechaDevolucion = fechaDevolucion;
-		this.usuario = usuario;
-		this.idLibro = idLibro;
-		
-		this.usuario.addPrestamo(this);
 	}
 
 	public int getId() {
@@ -28,20 +23,6 @@ public class Prestamo {
 	}
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public int getIdLibro() {
-		return idLibro;
-	}
-	public void setIdLibro(int idLibro) {
-		this.idLibro = idLibro;
-	}
-
-	public Usuario getUsuario() {
-		return usuario;
-	}
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
 	}
 
 	public Date getFechaSolicitado() {
@@ -57,5 +38,5 @@ public class Prestamo {
 	public void setFechaDevolucion(Date fechaDevolucion) {
 		this.fechaDevolucion = fechaDevolucion;
 	}
-	
+
 }

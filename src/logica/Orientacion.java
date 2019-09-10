@@ -1,6 +1,5 @@
-package src.logica;
+package logica;
 
 public enum Orientacion { 
-    TIC, ADM, ADMandTIC;
-	
+    TIC, ADM, ADMYTIC;
 }
