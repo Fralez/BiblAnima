@@ -1,4 +1,4 @@
-package presentacion;
+package persistencia;
 import java.sql.*;
 
 public class Conn {

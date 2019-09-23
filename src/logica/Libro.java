@@ -1,94 +1,128 @@
 package logica;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Libro {
-	
+
+	private String aniCode;
 	private String Autor;
-	private Date FechaPubl;
+	private Date fechaPubl;
 	private int nroEdicion;
-	private String Editorial;
+	private String editorial;
 	private String descripcion;
 	private int cantEjemplares;
+	private boolean hayEjemplarDisponible;
 	private int codigoISBN;
 	private String genero;
 	private String ImagURL;
-	private boolean HayEjemplarDisponible;
+	private ArrayList<Prestamo> prestamos = new ArrayList<Prestamo>();
 
-		
-	public Libro(String Autor, Date FechaPubl, int nroEdicion, String Editorial, String descripcion, int cantEjemplares, int codigoISBN, String genero, String ImagURL, boolean HayEjemplarDisponible) {
-		super();
-		
+	public Libro(String aniCode, String Autor, Date fechaPubl, int nroEdicion, String editorial, String descripcion,
+			int cantEjemplares, boolean hayEjemplarDisponible, int codigoISBN, String genero, String ImagURL) {
+		this.aniCode = aniCode;
 		this.Autor = Autor;
-		this.FechaPubl = FechaPubl;
+		this.fechaPubl = fechaPubl;
 		this.nroEdicion = nroEdicion;
-		this.Editorial = Editorial;
+		this.editorial = editorial;
 		this.descripcion = descripcion;
 		this.cantEjemplares = cantEjemplares;
+		this.hayEjemplarDisponible = hayEjemplarDisponible;
 		this.codigoISBN = codigoISBN;
 		this.genero = genero;
 		this.ImagURL = ImagURL;
-		this.HayEjemplarDisponible = HayEjemplarDisponible; 
-		
+
 	}
-	
-		public String getAutor() {
-			return Autor;
-		}
-		public void setAutor(String autor) {
-			Autor = autor;
-		}
-		public Date getFechaPubl() {
-			return FechaPubl;
-		}
-		public void setFechaPubl(Date fechaPubl) {
-			FechaPubl = fechaPubl;
-		}
-		public int getNroEdicion() {
-			return nroEdicion;
-		}
-		public void setNroEdicion(int nroEdicion) {
-			this.nroEdicion = nroEdicion;
-		}
-		public String getEditorial() {
-			return Editorial;
-		}
-		public void setEditorial(String editorial) {
-			Editorial = editorial;
-		}
-		public String getDescripcion() {
-			return descripcion;
-		}
-		public void setDescripcion(String descripcion) {
-			this.descripcion = descripcion;
-		}
-		public int getCantEjemplares() {
-			return cantEjemplares;
-		}
-		public void setCantEjemplares(int cantEjemplares) {
-			this.cantEjemplares = cantEjemplares;
-		}
-		public int getCodigoISBN() {
-			return codigoISBN;
-		}
-		public void setCodigoISBN(int codigoISBN) {
-			this.codigoISBN = codigoISBN;
-		}
-		public String getGenero() {
-			return genero;
-		}
-		public void setGenero(String genero) {
-			this.genero = genero;
-		}
-		public String getImagURL() {
-			return ImagURL;
-		}
-		public void setImagURL(String imagURL) {
-			ImagURL = imagURL;
-		}
-		public boolean hayEjemplarDisponible() {
-			
-			return HayEjemplarDisponible;
-		}
-		
+
+	public String getAniCode() {
+		return aniCode;
+	}
+
+	public void setAniCode(String aniCode) {
+		this.aniCode = aniCode;
+	}
+
+	public String getAutor() {
+		return Autor;
+	}
+
+	public void setAutor(String autor) {
+		Autor = autor;
+	}
+
+	public Date getFechaPubl() {
+		return fechaPubl;
+	}
+
+	public void setFechaPubl(Date fechaPubl) {
+		this.fechaPubl = fechaPubl;
+	}
+
+	public int getNroEdicion() {
+		return nroEdicion;
+	}
+
+	public void setNroEdicion(int nroEdicion) {
+		this.nroEdicion = nroEdicion;
+	}
+
+	public String getEditorial() {
+		return editorial;
+	}
+
+	public void setEditorial(String editorial) {
+		this.editorial = editorial;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public int getCantEjemplares() {
+		return cantEjemplares;
+	}
+
+	public void setCantEjemplares(int cantEjemplares) {
+		this.cantEjemplares = cantEjemplares;
+	}
+
+	public int getCodigoISBN() {
+		return codigoISBN;
+	}
+
+	public void setCodigoISBN(int codigoISBN) {
+		this.codigoISBN = codigoISBN;
+	}
+
+	public String getGenero() {
+		return genero;
+	}
+
+	public void setGenero(String genero) {
+		this.genero = genero;
+	}
+
+	public String getImagURL() {
+		return ImagURL;
+	}
+
+	public void setImagURL(String imagURL) {
+		ImagURL = imagURL;
+	}
+
+	public boolean isHayEjemplarDisponible() {
+		return hayEjemplarDisponible;
+	}
+
+	public void setHayEjemplarDisponible(boolean hayEjemplarDisponible) {
+		this.hayEjemplarDisponible = hayEjemplarDisponible;
+	}
+
+	public void addPrestamo(Prestamo prestamo) {
+		this.prestamos.add(prestamo);
+	}
 }

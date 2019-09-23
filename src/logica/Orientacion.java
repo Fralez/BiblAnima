@@ -1,5 +1,5 @@
 package logica;
 
-public enum Orientacion { 
-    TIC, ADM, ADMYTIC;
+public enum Orientacion {
+	TIC, ADM, ADMYTIC;
 }

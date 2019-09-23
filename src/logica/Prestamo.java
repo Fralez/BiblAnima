@@ -1,31 +1,43 @@
 package logica;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Prestamo {
 	private int idGenerator = 0;
-	
+
 	private int id;
-	private Date fechaSolicitado;
+	private Date fechaSolicitado = new Date();
 	private Date fechaDevolucion;
-	private Usuario usuario;
 	private int idLibro;
-	
-	public Prestamo(Date fechaSolicitado, Date fechaDevolucion, Usuario usuario, int idLibro) {
+	private Usuario usuario;
+	private Libro libro;
+	private ArrayList<Notificacion> notificaciones = new ArrayList<Notificacion>();
+
+	public Prestamo(Date fechaDevolucion, int idLibro, Usuario usuario, Libro libro) {
 		this.idGenerator++;
-		
+
 		this.id = this.idGenerator;
-		this.fechaSolicitado = fechaSolicitado;
+
 		this.fechaDevolucion = fechaDevolucion;
-		this.usuario = usuario;
 		this.idLibro = idLibro;
-		
+		this.usuario = usuario;
+		this.libro = libro;
+
 		this.usuario.addPrestamo(this);
+		this.libro.addPrestamo(this);
+
+		// Generar notificaciones
+		for (int i = 0; i < 3; i++) {
+			Notificacion notif = new Notificacion(this.fechaSolicitado, fechaDevolucion, this);
+			this.addNotificacion(notif);
+		}
 	}
 
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
@@ -33,6 +45,7 @@ public class Prestamo {
 	public int getIdLibro() {
 		return idLibro;
 	}
+
 	public void setIdLibro(int idLibro) {
 		this.idLibro = idLibro;
 	}
@@ -40,6 +53,7 @@ public class Prestamo {
 	public Usuario getUsuario() {
 		return usuario;
 	}
+
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
@@ -47,6 +61,7 @@ public class Prestamo {
 	public Date getFechaSolicitado() {
 		return fechaSolicitado;
 	}
+
 	public void setFechaSolicitado(Date fechaSolicitado) {
 		this.fechaSolicitado = fechaSolicitado;
 	}
@@ -54,8 +69,13 @@ public class Prestamo {
 	public Date getFechaDevolucion() {
 		return fechaDevolucion;
 	}
+
 	public void setFechaDevolucion(Date fechaDevolucion) {
 		this.fechaDevolucion = fechaDevolucion;
 	}
-	
+
+	public void addNotificacion(Notificacion notificacion) {
+		this.notificaciones.add(notificacion);
+	}
+
 }
