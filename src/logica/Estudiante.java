@@ -4,14 +4,12 @@ public class Estudiante extends Usuario {
 	private Orientacion orient;
 	// `tope` representa la cantidad de prestamos activos que tiene el usuario,
 	// siendo 2 el tope real.
-	private int tope;
+	private int tope = 0;
 
-	public Estudiante(int ci, String nombre, String apellido, String mail, String password, Orientacion orient,
-			int tope) {
+	public Estudiante(int ci, String nombre, String apellido, String mail, String password, Orientacion orient) {
 		super(ci, nombre, apellido, mail, password);
 
 		this.orient = orient;
-		this.tope = tope;
 	}
 
 	public Orientacion getOrient() {

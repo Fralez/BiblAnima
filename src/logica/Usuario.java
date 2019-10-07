@@ -72,6 +72,11 @@ public class Usuario {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+
+	public ArrayList<Prestamo> getPrestamos() {
+		return prestamos;
+	}
 
 	public void addPrestamo(Prestamo prestamo) {
 		this.prestamos.add(prestamo);

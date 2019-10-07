@@ -12,6 +12,7 @@ public class Libro {
 	private String editorial;
 	private String descripcion;
 	private int cantEjemplares;
+	private int cantEjemplaresDisp;
 	private boolean hayEjemplarDisponible;
 	private int codigoISBN;
 	private String genero;
@@ -27,6 +28,7 @@ public class Libro {
 		this.editorial = editorial;
 		this.descripcion = descripcion;
 		this.cantEjemplares = cantEjemplares;
+		this.cantEjemplaresDisp = cantEjemplares;
 		this.hayEjemplarDisponible = hayEjemplarDisponible;
 		this.codigoISBN = codigoISBN;
 		this.genero = genero;
@@ -90,6 +92,14 @@ public class Libro {
 		this.cantEjemplares = cantEjemplares;
 	}
 
+	public int getCantEjemplaresDisp() {
+		return cantEjemplaresDisp;
+	}
+
+	public void setCantEjemplaresDisp(int cantEjemplaresDisp) {
+		this.cantEjemplaresDisp = cantEjemplaresDisp;
+	}
+
 	public int getCodigoISBN() {
 		return codigoISBN;
 	}
@@ -114,7 +124,7 @@ public class Libro {
 		ImagURL = imagURL;
 	}
 
-	public boolean isHayEjemplarDisponible() {
+	public boolean hayEjemplarDisponible() {
 		return hayEjemplarDisponible;
 	}
 

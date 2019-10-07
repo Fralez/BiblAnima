@@ -4,23 +4,17 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Prestamo {
-	private int idGenerator = 0;
-
-	private int id;
 	private Date fechaSolicitado = new Date();
 	private Date fechaDevolucion;
-	private int idLibro;
+	private Boolean devuelto;
 	private Usuario usuario;
 	private Libro libro;
 	private ArrayList<Notificacion> notificaciones = new ArrayList<Notificacion>();
 
-	public Prestamo(Date fechaDevolucion, int idLibro, Usuario usuario, Libro libro) {
-		this.idGenerator++;
-
-		this.id = this.idGenerator;
+	public Prestamo(Date fechaDevolucion, Boolean devuelto, Usuario usuario, Libro libro) {
 
 		this.fechaDevolucion = fechaDevolucion;
-		this.idLibro = idLibro;
+		this.devuelto = devuelto;
 		this.usuario = usuario;
 		this.libro = libro;
 
@@ -29,25 +23,28 @@ public class Prestamo {
 
 		// Generar notificaciones
 		for (int i = 0; i < 3; i++) {
-			Notificacion notif = new Notificacion(this.fechaSolicitado, fechaDevolucion, this);
-			this.addNotificacion(notif);
+			new Notificacion(this.fechaSolicitado, fechaDevolucion, this);
 		}
 	}
-
-	public int getId() {
-		return id;
+	
+	public Date getFechaDevolucion() {
+		return fechaDevolucion;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setFechaSolicitado(Date fechaSolicitado) {
+		this.fechaSolicitado = fechaSolicitado;
 	}
 
-	public int getIdLibro() {
-		return idLibro;
+	public Boolean getDevuelto() {
+		return devuelto;
 	}
 
-	public void setIdLibro(int idLibro) {
-		this.idLibro = idLibro;
+	public void setFechaDevolucion(Date fechaDevolucion) {
+		this.fechaDevolucion = fechaDevolucion;
+	}
+
+	public void setDevuelto(Boolean devuelto) {
+		this.devuelto = devuelto;
 	}
 
 	public Usuario getUsuario() {
@@ -58,20 +55,16 @@ public class Prestamo {
 		this.usuario = usuario;
 	}
 
+	public Libro getLibro() {
+		return libro;
+	}
+
+	public void setLibro(Libro libro) {
+		this.libro = libro;
+	}
+
 	public Date getFechaSolicitado() {
 		return fechaSolicitado;
-	}
-
-	public void setFechaSolicitado(Date fechaSolicitado) {
-		this.fechaSolicitado = fechaSolicitado;
-	}
-
-	public Date getFechaDevolucion() {
-		return fechaDevolucion;
-	}
-
-	public void setFechaDevolucion(Date fechaDevolucion) {
-		this.fechaDevolucion = fechaDevolucion;
 	}
 
 	public void addNotificacion(Notificacion notificacion) {
