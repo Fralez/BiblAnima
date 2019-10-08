@@ -81,9 +81,8 @@ public class Manejador {
 	public void modificarDatosUsuario(int ci, String nombre, String apellido, String mail, String password) {
 		try {
 			s = con.createStatement();
-			s.executeUpdate("UPDATE Usuario(ci, nombre, apellido, mail, password) SET nombre = '" + nombre
-					+ "', apellido = '" + apellido + "', mail = '" + mail + "', password = '" + password
-					+ "' WHERE Usuario.ci = " + ci + ";");
+			s.executeUpdate("UPDATE Usuario SET nombre = '" + nombre + "', apellido = '" + apellido + "', mail = '"
+					+ mail + "', password = '" + password + "' WHERE Usuario.ci = " + ci + ";");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -100,6 +99,13 @@ public class Manejador {
 	}
 
 	public void altaPrestamo(Date fechaDev, Usuario usuario, Libro libro) throws Exception {
+		if (usuario instanceof Estudiante) {
+			// Termina la funcion si el usuario es Estudiante y tiene ya 2 prestamos activos
+			if (((Estudiante) usuario).getTope() == 2) {
+				return;
+			}
+		}
+
 		if (libro.hayEjemplarDisponible()) {
 			try {
 				s = con.createStatement();
@@ -110,8 +116,14 @@ public class Manejador {
 								+ libro.getAniCode() + ");");
 				if (libro.getCantEjemplaresDisp() > 0) {
 					libro.setCantEjemplaresDisp(libro.getCantEjemplaresDisp() - 1);
+					// Modificar la base de datos con el nuevo cant de ejemplares disponibles
+					s.executeUpdate("UPDATE Libro SET cantEjemplaresDisp = " + libro.getCantEjemplaresDisp()
+							+ " WHERE Libro.codigoAnima =" + libro.getAniCode() + ";");
 					if (libro.getCantEjemplaresDisp() < 1) {
 						libro.setHayEjemplarDisponible(false);
+						// Modificar la base de datos con el nuevo hayEjemplarDisponible
+						s.executeUpdate("UPDATE Libro SET hayEjemplaresDisponibles = " + libro.hayEjemplarDisponible()
+								+ " WHERE Libro.codigoAnima =" + libro.getAniCode() + ";");
 					}
 				}
 			} catch (SQLException e) {
@@ -134,10 +146,10 @@ public class Manejador {
 
 	public void altaLibro(String aniCode, String Autor, Date fechaPubl, int nroEdicion, String editorial,
 			String descripcion, int cantEjemplares, boolean hayEjemplarDisponible, int codigoISBN, String genero,
-			String ImagURL) {
+			String ImagURL, String titulo) {
 
 		Libro libro = new Libro(aniCode, Autor, fechaPubl, nroEdicion, editorial, descripcion, cantEjemplares,
-				hayEjemplarDisponible, codigoISBN, genero, ImagURL);
+				hayEjemplarDisponible, codigoISBN, genero, ImagURL, titulo);
 
 		try {
 			s.executeUpdate(
@@ -152,15 +164,14 @@ public class Manejador {
 		libros.add(libro);
 	}
 
-	public void darDeBajaUnPrestamo(int ciUsuario, int idPrestamo) {
+	public void darDeBajaUnPrestamo(int idPrestamo, Prestamo prestamo) {
 		try {
 			s = con.createStatement();
 			s.executeUpdate("UPDATE Prestamo SET devuelto = 1 WHERE Prestamo.id = " + idPrestamo);
+			// TODO - Update cantEjemplaresDisp
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		// Actualizar el array de usuarios para que el prestamo sea actualizado
-		// cargarDatos();
 	}
 
 }

@@ -17,10 +17,12 @@ public class Libro {
 	private int codigoISBN;
 	private String genero;
 	private String ImagURL;
+	private String titulo;
 	private ArrayList<Prestamo> prestamos = new ArrayList<Prestamo>();
 
 	public Libro(String aniCode, String Autor, Date fechaPubl, int nroEdicion, String editorial, String descripcion,
-			int cantEjemplares, boolean hayEjemplarDisponible, int codigoISBN, String genero, String ImagURL) {
+			int cantEjemplares, boolean hayEjemplarDisponible, int codigoISBN, String genero, String ImagURL,
+			String titulo) {
 		this.aniCode = aniCode;
 		this.Autor = Autor;
 		this.fechaPubl = fechaPubl;
@@ -33,7 +35,7 @@ public class Libro {
 		this.codigoISBN = codigoISBN;
 		this.genero = genero;
 		this.ImagURL = ImagURL;
-
+		this.titulo = titulo;
 	}
 
 	public String getAniCode() {
@@ -122,6 +124,14 @@ public class Libro {
 
 	public void setImagURL(String imagURL) {
 		ImagURL = imagURL;
+	}
+
+	public String getTitulo() {
+		return titulo;
+	}
+	
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
 	}
 
 	public boolean hayEjemplarDisponible() {
