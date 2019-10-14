@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Prestamo {
+	private int id;
+	
 	private Date fechaSolicitado = new Date();
 	private Date fechaDevolucion;
 	private Boolean devuelto;
@@ -11,8 +13,9 @@ public class Prestamo {
 	private Libro libro;
 	private ArrayList<Notificacion> notificaciones = new ArrayList<Notificacion>();
 
-	public Prestamo(Date fechaDevolucion, Boolean devuelto, Usuario usuario, Libro libro) {
-
+	public Prestamo(int id, Date fechaDevolucion, Boolean devuelto, Usuario usuario, Libro libro) {
+		
+		this.id = id;
 		this.fechaDevolucion = fechaDevolucion;
 		this.devuelto = devuelto;
 		this.usuario = usuario;
@@ -27,6 +30,14 @@ public class Prestamo {
 		}
 	}
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public Date getFechaDevolucion() {
 		return fechaDevolucion;
 	}

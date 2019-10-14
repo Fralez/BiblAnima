@@ -3,8 +3,6 @@ package logica;
 import java.util.ArrayList;
 
 public class Usuario {
-	private int idGenerator = 0;
-
 	private int id;
 
 	private int ci;
@@ -14,10 +12,9 @@ public class Usuario {
 	private String password;
 	private ArrayList<Prestamo> prestamos = new ArrayList<Prestamo>();
 
-	public Usuario(int ci, String nombre, String apellido, String mail, String password) {
-		this.idGenerator++;
+	public Usuario(int id, int ci, String nombre, String apellido, String mail, String password) {
 
-		this.id = this.idGenerator;
+		this.id = id;
 		this.ci = ci;
 		this.nombre = nombre;
 		this.apellido = apellido;

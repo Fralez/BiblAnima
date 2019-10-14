@@ -6,8 +6,8 @@ public class Estudiante extends Usuario {
 	// siendo 2 el tope real.
 	private int tope = 0;
 
-	public Estudiante(int ci, String nombre, String apellido, String mail, String password, Orientacion orient) {
-		super(ci, nombre, apellido, mail, password);
+	public Estudiante(int id, int ci, String nombre, String apellido, String mail, String password, Orientacion orient) {
+		super(id, ci, nombre, apellido, mail, password);
 
 		this.orient = orient;
 	}
