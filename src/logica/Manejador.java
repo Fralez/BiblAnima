@@ -34,7 +34,7 @@ public class Manejador {
 			try {
 				s = con.createStatement();
 				rs = s.executeQuery("SELECT MAX(u.id) FROM Usuario u");
-				id = rs.getInt(id);
+				id = rs.getInt("id");
 				return id++;
 
 			} catch (SQLException e) {
@@ -46,7 +46,7 @@ public class Manejador {
 			try {
 				s = con.createStatement();
 				rs = s.executeQuery("SELECT MAX(p.id) FROM Prestamo p");
-				id = rs.getInt(id);
+				id = rs.getInt("id");
 				return id++;
 
 			} catch (SQLException e) {
@@ -168,11 +168,11 @@ public class Manejador {
 
 				// Incrementar el tope en uno si el usuario es Estudiante
 				if (usuario instanceof Estudiante) {
-					// En la base de datos
-					s.executeUpdate("UPDATE Usuario SET tope = " + (((Estudiante) usuario).getTope() + 1)
-							+ " WHERE Usuario.id = " + usuario.getId() + ";");
 					// En el array
 					((Estudiante) usuario).setTope(((Estudiante) usuario).getTope() + 1);
+					// En la base de datos
+					s.executeUpdate("UPDATE Usuario SET tope = " + (((Estudiante) usuario).getTope())
+							+ " WHERE Usuario.id = " + usuario.getId() + ";");
 				}
 
 				// Suplanto el usuario viejo poro el actualizado en el array
@@ -216,7 +216,7 @@ public class Manejador {
 
 	public void altaLibro(String aniCode, String Autor, Date fechaPubl, int nroEdicion, String editorial,
 			String descripcion, int cantEjemplares, boolean hayEjemplarDisponible, int codigoISBN, String genero,
-			String ImagURL, String titulo) {
+			String ImagURL, String titulo) throws SQLException {
 
 		Libro libro = new Libro(aniCode, Autor, fechaPubl, nroEdicion, editorial, descripcion, cantEjemplares,
 				hayEjemplarDisponible, codigoISBN, genero, ImagURL, titulo);
@@ -229,7 +229,7 @@ public class Manejador {
 							+ codigoISBN + "', '" + genero + "', '" + ImagURL + "')");
 			libros.add(libro);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw e;
 		}
 
 	}
