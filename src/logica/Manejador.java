@@ -11,6 +11,8 @@ import persistencia.Conn;
 
 public class Manejador {
 	private Manejador() {
+//		When the Manejador is initialised the data from DB is fetched
+		this.fetchData();
 	}
 
 	private static final Manejador instance = new Manejador();
@@ -24,6 +26,31 @@ public class Manejador {
 
 	public static Manejador getInstance() {
 		return instance;
+	}
+
+	private void fetchData() {
+		ResultSet rsUsuarios;
+		ResultSet rsLibros;
+
+		try {
+			s = con.createStatement();
+			rsUsuarios = s.executeQuery("SELECT * FROM Usuario");
+			while (rsUsuarios.next()) {
+				usuarios.add(new Usuario(rsUsuarios.getInt("id"), rsUsuarios.getInt("ci"),
+						rsUsuarios.getString("nombre"), rsUsuarios.getString("apellido"), rsUsuarios.getString("mail"),
+						rsUsuarios.getString("password")));
+			}
+			rsLibros = s.executeQuery("SELECT * FROM Libro");
+			while (rsLibros.next()) {
+				libros.add(new Libro(rsLibros.getString("aniCode"), rsLibros.getString("autor"),
+						rsLibros.getInt("yearPubl"), rsLibros.getInt("nroedicion"), rsLibros.getString("editorial"),
+						rsLibros.getString("descripcion"), rsLibros.getInt("cantEjemplares"),
+						rsLibros.getBoolean("hayEjemplaresDisponibles"), rsLibros.getString("codigoISBN"),
+						rsLibros.getString("genero"), rsLibros.getString("imagURL"), rsLibros.getString("titulo")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public int generarID(String obj) {

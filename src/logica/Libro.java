@@ -7,25 +7,25 @@ public class Libro {
 
 	private String aniCode;
 	private String Autor;
-	private Date fechaPubl;
+	private int yearPubl;
 	private int nroEdicion;
 	private String editorial;
 	private String descripcion;
 	private int cantEjemplares;
 	private int cantEjemplaresDisp;
 	private boolean hayEjemplarDisponible;
-	private int codigoISBN;
+	private String codigoISBN;
 	private String genero;
 	private String ImagURL;
 	private String titulo;
 	private ArrayList<Prestamo> prestamos = new ArrayList<Prestamo>();
 
-	public Libro(String aniCode, String Autor, Date fechaPubl, int nroEdicion, String editorial, String descripcion,
-			int cantEjemplares, boolean hayEjemplarDisponible, int codigoISBN, String genero, String ImagURL,
+	public Libro(String aniCode, String Autor, int yearPubl, int nroEdicion, String editorial, String descripcion,
+			int cantEjemplares, boolean hayEjemplarDisponible, String codigoISBN, String genero, String ImagURL,
 			String titulo) {
 		this.aniCode = aniCode;
 		this.Autor = Autor;
-		this.fechaPubl = fechaPubl;
+		this.yearPubl = yearPubl;
 		this.nroEdicion = nroEdicion;
 		this.editorial = editorial;
 		this.descripcion = descripcion;
@@ -54,12 +54,12 @@ public class Libro {
 		Autor = autor;
 	}
 
-	public Date getFechaPubl() {
-		return fechaPubl;
+	public int getYearPubl() {
+		return yearPubl;
 	}
 
-	public void setFechaPubl(Date fechaPubl) {
-		this.fechaPubl = fechaPubl;
+	public void setYearPubl(int yearPubl) {
+		this.yearPubl = yearPubl;
 	}
 
 	public int getNroEdicion() {
@@ -102,11 +102,11 @@ public class Libro {
 		this.cantEjemplaresDisp = cantEjemplaresDisp;
 	}
 
-	public int getCodigoISBN() {
+	public String getCodigoISBN() {
 		return codigoISBN;
 	}
 
-	public void setCodigoISBN(int codigoISBN) {
+	public void setCodigoISBN(String codigoISBN) {
 		this.codigoISBN = codigoISBN;
 	}
 
