@@ -60,10 +60,13 @@ public class Manejador {
 		case "usuario":
 			try {
 				s = con.createStatement();
-				rs = s.executeQuery("SELECT MAX(u.id) FROM Usuario u");
-				id = rs.getInt("id");
-				return id++;
-
+				rs = s.executeQuery("SELECT MAX(u.id) as \"id\" FROM Usuario u");
+				if(rs.next()) {
+					id = rs.getInt("id");										
+				} else {
+					id = 0;					
+				}
+				return id+1;					
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -102,7 +105,7 @@ public class Manejador {
 			break;
 		case PROFESOR:
 			usuario = new Profesor(id, ci, nombre, apellido, mail, password, orient);
-			typeQuery = "INSERT INTO Profesor(id, orient) VALUES(" + usuario.getId() + ", '" + orient + ");";
+			typeQuery = "INSERT INTO Profesor(id, orient) VALUES(" + usuario.getId() + ", '" + orient + "');";
 			break;
 		case BIBLIOTECARIO:
 			usuario = new Bibliotecario(id, ci, nombre, apellido, mail, password);
