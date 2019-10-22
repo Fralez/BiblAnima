@@ -11,7 +11,7 @@ import persistencia.Conn;
 
 public class Manejador {
 	private Manejador() {
-//		When the Manejador is initialised the data from DB is fetched
+		// When the Manejador is initialised the data from DB is fetched
 		this.fetchData();
 	}
 
@@ -45,7 +45,7 @@ public class Manejador {
 				libros.add(new Libro(rsLibros.getString("aniCode"), rsLibros.getString("autor"),
 						rsLibros.getInt("yearPubl"), rsLibros.getInt("nroedicion"), rsLibros.getString("editorial"),
 						rsLibros.getString("descripcion"), rsLibros.getInt("cantEjemplares"),
-						rsLibros.getBoolean("hayEjemplaresDisponibles"), rsLibros.getString("codigoISBN"),
+						rsLibros.getBoolean("hayEjemplarDisponible"), rsLibros.getString("codigoISBN"),
 						rsLibros.getString("genero"), rsLibros.getString("imagURL"), rsLibros.getString("titulo")));
 			}
 		} catch (SQLException e) {
@@ -221,7 +221,7 @@ public class Manejador {
 						// Modificar en el array con el nuevo hayEjemplarDisponible
 						libro.setHayEjemplarDisponible(false);
 						// Modificar la base de datos con el nuevo hayEjemplarDisponible
-						s.executeUpdate("UPDATE Libro SET hayEjemplaresDisponibles = " + libro.hayEjemplarDisponible()
+						s.executeUpdate("UPDATE Libro SET hayEjemplarDisponible = " + libro.hayEjemplarDisponible()
 								+ " WHERE Libro.codigoAnima =" + libro.getAniCode() + ";");
 					}
 
@@ -241,17 +241,17 @@ public class Manejador {
 		}
 	}
 
-	public void altaLibro(String aniCode, String Autor, Date fechaPubl, int nroEdicion, String editorial,
-			String descripcion, int cantEjemplares, boolean hayEjemplarDisponible, int codigoISBN, String genero,
+	public void altaLibro(String aniCode, String Autor, int yearPubl, int nroEdicion, String editorial,
+			String descripcion, int cantEjemplares, boolean hayEjemplarDisponible, String codigoISBN, String genero,
 			String ImagURL, String titulo) throws SQLException {
 
-		Libro libro = new Libro(aniCode, Autor, fechaPubl, nroEdicion, editorial, descripcion, cantEjemplares,
+		Libro libro = new Libro(aniCode, Autor, yearPubl, nroEdicion, editorial, descripcion, cantEjemplares,
 				hayEjemplarDisponible, codigoISBN, genero, ImagURL, titulo);
 
 		try {
 			s.executeUpdate(
-					"INSERT INTO Libro(aniCode, autor, fechaPubl, nroEdicion, editorial, descripcion, cantEjemplares, hayEjemplaresDisponibles, codigoISBN, genero, imagUrl) VALUES('"
-							+ aniCode + "', '" + Autor + "', " + fechaPubl + ", " + nroEdicion + ", '" + editorial
+					"INSERT INTO Libro(aniCode, autor, yearPubl, nroEdicion, editorial, descripcion, cantEjemplares, hayEjemplarDisponible, codigoISBN, genero, imagUrl) VALUES('"
+							+ aniCode + "', '" + Autor + "', " + yearPubl + ", " + nroEdicion + ", '" + editorial
 							+ "', '" + descripcion + "', " + cantEjemplares + ", " + hayEjemplarDisponible + ", '"
 							+ codigoISBN + "', '" + genero + "', '" + ImagURL + "')");
 			libros.add(libro);
