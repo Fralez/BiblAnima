@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -11,6 +12,8 @@ import persistencia.Conn;
 
 public class Manejador {
 	private Manejador() {
+		// When the Manejador is initialised the data from DB is fetched
+		this.fetchData();
 	}
 
 	private static final Manejador instance = new Manejador();
@@ -26,6 +29,59 @@ public class Manejador {
 		return instance;
 	}
 
+	private void fetchData() {
+		ResultSet rsUsuarios;
+		ResultSet rsLibros;
+		ResultSet rsPrestamos;
+		Statement sPrestamos;
+
+		try {
+			s = con.createStatement();
+			sPrestamos = con.createStatement();
+
+			rsLibros = s.executeQuery("SELECT * FROM Libro");
+			while (rsLibros.next()) {
+				libros.add(new Libro(rsLibros.getString("aniCode"), rsLibros.getString("autor"),
+						rsLibros.getInt("yearPubl"), rsLibros.getInt("nroedicion"), rsLibros.getString("editorial"),
+						rsLibros.getString("descripcion"), rsLibros.getInt("cantEjemplares"),
+						rsLibros.getInt("cantEjemplaresDisp"), rsLibros.getBoolean("hayEjemplarDisponible"),
+						rsLibros.getString("codigoISBN"), rsLibros.getString("genero"), rsLibros.getString("imagURL"),
+						rsLibros.getString("titulo")));
+			}
+
+			rsUsuarios = s.executeQuery("SELECT * FROM Usuario;");
+			while (rsUsuarios.next()) {
+
+				rsPrestamos = sPrestamos
+						.executeQuery("SELECT * FROM Prestamo WHERE idUsuario = " + rsUsuarios.getInt("id") + ";");
+
+				Usuario usuario = new Usuario(rsUsuarios.getInt("id"), rsUsuarios.getInt("ci"),
+						rsUsuarios.getString("nombre"), rsUsuarios.getString("apellido"), rsUsuarios.getString("mail"),
+						rsUsuarios.getString("password"));
+
+				while (rsPrestamos.next()) {
+					Libro libroPrestamo = consultaLibro(rsPrestamos.getString("aniCode"));
+					new Prestamo(rsPrestamos.getInt("id"), rsPrestamos.getDate("fechaDevolucion"),
+							rsPrestamos.getDate("fechaSolicitado"), rsPrestamos.getBoolean("devuelto"), usuario,
+							libroPrestamo);
+				}
+				usuarios.add(usuario);
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Boolean login(int ci, String password) {
+		for (int i = 0; i < usuarios.size(); i++) {
+			if (usuarios.get(i).getCi() == ci && usuarios.get(i).getPassword().equals(password)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public int generarID(String obj) {
 		ResultSet rs;
 		int id = 0;
@@ -33,10 +89,13 @@ public class Manejador {
 		case "usuario":
 			try {
 				s = con.createStatement();
-				rs = s.executeQuery("SELECT MAX(u.id) FROM Usuario u");
-				id = rs.getInt("id");
-				return id++;
-
+				rs = s.executeQuery("SELECT MAX(u.id) as \"id\" FROM Usuario u");
+				if (rs.next()) {
+					id = rs.getInt("id");
+				} else {
+					id = 0;
+				}
+				return id + 1;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -45,10 +104,13 @@ public class Manejador {
 		case "prestamo":
 			try {
 				s = con.createStatement();
-				rs = s.executeQuery("SELECT MAX(p.id) FROM Prestamo p");
-				id = rs.getInt("id");
-				return id++;
-
+				rs = s.executeQuery("SELECT MAX(p.id) as \"id\" FROM Prestamo p");
+				if (rs.next()) {
+					id = rs.getInt("id");
+				} else {
+					id = 0;
+				}
+				return id + 1;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -75,7 +137,7 @@ public class Manejador {
 			break;
 		case PROFESOR:
 			usuario = new Profesor(id, ci, nombre, apellido, mail, password, orient);
-			typeQuery = "INSERT INTO Profesor(id, orient) VALUES(" + usuario.getId() + ", '" + orient + ");";
+			typeQuery = "INSERT INTO Profesor(id, orient) VALUES(" + usuario.getId() + ", '" + orient + "');";
 			break;
 		case BIBLIOTECARIO:
 			usuario = new Bibliotecario(id, ci, nombre, apellido, mail, password);
@@ -135,6 +197,24 @@ public class Manejador {
 		return libros;
 	}
 
+	public Libro consultaLibro(String aniCode) {
+		for (int i = 0; i < libros.size(); i++) {
+			if (libros.get(i).getAniCode().equals(aniCode)) {
+				return libros.get(i);
+			}
+		}
+		return null;
+	}
+
+	public Prestamo consultaPrestamo(int id) {
+		for (int i = 0; i < listarPrestamos().size(); i++) {
+			if (listarPrestamos().get(i).getId() == id) {
+				return listarPrestamos().get(i);
+			}
+		}
+		return null;
+	}
+
 	public ArrayList<Prestamo> listarPrestamos() {
 		ArrayList<Prestamo> prestamos = new ArrayList<Prestamo>();
 
@@ -145,13 +225,11 @@ public class Manejador {
 		return prestamos;
 	}
 
-	public void altaPrestamo(Date fechaDev, Usuario usuario, Libro libro) throws Exception {
-		if (usuario instanceof Estudiante) {
-			// Termina la funcion si el usuario es Estudiante y tiene ya 2 prestamos activos
-			if (((Estudiante) usuario).getTope() == 2) {
-				throw new Exception("Tope alcanzado");
-			}
-		}
+	public void altaPrestamo(String sFechaDev, Usuario usuario, Libro libro) throws Exception {
+		// Termina la funcion si el usuario es Estudiante y tiene ya 2 prestamos activos
+//		if (((Estudiante) usuario).getTope() > -1) {
+//			throw new Exception("Tope alcanzado");
+//		}
 
 		if (libro.hayEjemplarDisponible()) {
 			// Id de prestamo
@@ -159,21 +237,23 @@ public class Manejador {
 
 			try {
 				s = con.createStatement();
-				new Prestamo(id, fechaDev, false, usuario, libro);
+				SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+				Date fechaDev = formatter.parse(sFechaDev);
+				new Prestamo(id, fechaDev, new Date(), false, usuario, libro);
 
 				s.executeUpdate(
 						"INSERT INTO Prestamo (id, fechaSolicitado, fechaDevolucion, devuelto, idUsuario, aniCode) VALUES("
-								+ id + ", " + new Date() + ", " + fechaDev + ", " + 0 + ", " + usuario.getId() + ", "
-								+ libro.getAniCode() + ");");
+								+ id + ", CURTIME()" + ", STR_TO_DATE('" + sFechaDev + "', '%m/%d/%Y')" + ", " + 0
+								+ ", " + usuario.getId() + ", '" + libro.getAniCode() + "');");
 
 				// Incrementar el tope en uno si el usuario es Estudiante
-				if (usuario instanceof Estudiante) {
-					// En el array
-					((Estudiante) usuario).setTope(((Estudiante) usuario).getTope() + 1);
-					// En la base de datos
-					s.executeUpdate("UPDATE Usuario SET tope = " + (((Estudiante) usuario).getTope())
-							+ " WHERE Usuario.id = " + usuario.getId() + ";");
-				}
+//				if (((Estudiante) usuario).getTope() > -1) {
+//					// En el array
+//					((Estudiante) usuario).setTope(((Estudiante) usuario).getTope() + 1);
+//					// En la base de datos
+//					s.executeUpdate("UPDATE Usuario u SET u.tope = " + ((Estudiante) usuario).getTope()
+//							+ " WHERE u.id = " + usuario.getId() + ";");
+//				}
 
 				// Suplanto el usuario viejo poro el actualizado en el array
 				for (int i = 0; i < usuarios.size(); i++) {
@@ -188,14 +268,14 @@ public class Manejador {
 
 					// Modificar la base de datos con el nuevo cant de ejemplares disponibles
 					s.executeUpdate("UPDATE Libro SET cantEjemplaresDisp = " + libro.getCantEjemplaresDisp()
-							+ " WHERE Libro.codigoAnima =" + libro.getAniCode() + ";");
+							+ " WHERE aniCode = '" + libro.getAniCode() + "';");
 
 					if (libro.getCantEjemplaresDisp() < 1) {
 						// Modificar en el array con el nuevo hayEjemplarDisponible
 						libro.setHayEjemplarDisponible(false);
 						// Modificar la base de datos con el nuevo hayEjemplarDisponible
-						s.executeUpdate("UPDATE Libro SET hayEjemplaresDisponibles = " + libro.hayEjemplarDisponible()
-								+ " WHERE Libro.codigoAnima =" + libro.getAniCode() + ";");
+						s.executeUpdate("UPDATE Libro SET hayEjemplarDisponible = " + libro.hayEjemplarDisponible()
+								+ " WHERE aniCode = '" + libro.getAniCode() + "';");
 					}
 
 					// Cambiar el libro actualizado por su equivalente en el array de libros
@@ -214,19 +294,20 @@ public class Manejador {
 		}
 	}
 
-	public void altaLibro(String aniCode, String Autor, Date fechaPubl, int nroEdicion, String editorial,
-			String descripcion, int cantEjemplares, boolean hayEjemplarDisponible, int codigoISBN, String genero,
+	public void altaLibro(String aniCode, String Autor, int yearPubl, int nroEdicion, String editorial,
+			String descripcion, int cantEjemplares, boolean hayEjemplarDisponible, String codigoISBN, String genero,
 			String ImagURL, String titulo) throws SQLException {
 
-		Libro libro = new Libro(aniCode, Autor, fechaPubl, nroEdicion, editorial, descripcion, cantEjemplares,
-				hayEjemplarDisponible, codigoISBN, genero, ImagURL, titulo);
+		Libro libro = new Libro(aniCode, Autor, yearPubl, nroEdicion, editorial, descripcion, cantEjemplares,
+				cantEjemplares, hayEjemplarDisponible, codigoISBN, genero, ImagURL, titulo);
 
 		try {
 			s.executeUpdate(
-					"INSERT INTO Libro(aniCode, autor, fechaPubl, nroEdicion, editorial, descripcion, cantEjemplares, hayEjemplaresDisponibles, codigoISBN, genero, imagUrl) VALUES('"
-							+ aniCode + "', '" + Autor + "', " + fechaPubl + ", " + nroEdicion + ", '" + editorial
-							+ "', '" + descripcion + "', " + cantEjemplares + ", " + hayEjemplarDisponible + ", '"
-							+ codigoISBN + "', '" + genero + "', '" + ImagURL + "')");
+					"INSERT INTO Libro(aniCode, autor, yearPubl, nroEdicion, editorial, descripcion, cantEjemplares, cantEjemplaresDisp, hayEjemplarDisponible, codigoISBN, genero, imagUrl, titulo) VALUES('"
+							+ aniCode + "', '" + Autor + "', " + yearPubl + ", " + nroEdicion + ", '" + editorial
+							+ "', '" + descripcion + "', " + cantEjemplares + ", " + cantEjemplares + ", "
+							+ hayEjemplarDisponible + ", '" + codigoISBN + "', '" + genero + "', '" + ImagURL + "', '"
+							+ titulo + "');");
 			libros.add(libro);
 		} catch (SQLException e) {
 			throw e;
@@ -243,13 +324,13 @@ public class Manejador {
 				// Reconocer el usuario que hizo el prestamo
 				if (prestamo.getUsuario().getCi() == usuarios.get(i).getCi()) {
 					// Decrementar el tope en uno si el usuario es Estudiante
-					if (usuarios.get(i) instanceof Estudiante) {
-						// En la base de datos
-						s.executeUpdate("UPDATE Usuario SET tope = " + (((Estudiante) usuarios.get(i)).getTope() - 1)
-								+ " WHERE Usuario.id = " + usuarios.get(i).getId() + ";");
-						// En el array
-						((Estudiante) usuarios.get(i)).setTope(((Estudiante) usuarios.get(i)).getTope() - 1);
-					}
+//					if (usuarios.get(i) instanceof Estudiante) {
+//						// En la base de datos
+//						s.executeUpdate("UPDATE Usuario SET tope = " + (((Estudiante) usuarios.get(i)).getTope() - 1)
+//								+ " WHERE Usuario.id = " + usuarios.get(i).getId() + ";");
+//						// En el array
+//						((Estudiante) usuarios.get(i)).setTope(((Estudiante) usuarios.get(i)).getTope() - 1);
+//					}
 
 					// Recorrer el array de prestamos del usuario reconocido
 					for (int j = 0; j < usuarios.get(i).getPrestamos().size(); j++) {
@@ -266,8 +347,8 @@ public class Manejador {
 							// Luego lo actualizo en la base de datos
 							s.executeUpdate("UPDATE Libro SET cantEjemplaresDisp = "
 									+ usuarios.get(i).getPrestamos().get(j).getLibro().getCantEjemplaresDisp()
-									+ " WHERE Libro.aniCode = "
-									+ usuarios.get(i).getPrestamos().get(j).getLibro().getAniCode());
+									+ ", hayEjemplarDisponible = 1 WHERE Libro.aniCode = '"
+									+ usuarios.get(i).getPrestamos().get(j).getLibro().getAniCode() + "';");
 						}
 					}
 				}
