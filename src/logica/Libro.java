@@ -21,7 +21,7 @@ public class Libro {
 	private ArrayList<Prestamo> prestamos = new ArrayList<Prestamo>();
 
 	public Libro(String aniCode, String Autor, int yearPubl, int nroEdicion, String editorial, String descripcion,
-			int cantEjemplares, boolean hayEjemplarDisponible, String codigoISBN, String genero, String ImagURL,
+			int cantEjemplares, int cantEjemplaresDisp, boolean hayEjemplarDisponible, String codigoISBN, String genero, String ImagURL,
 			String titulo) {
 		this.aniCode = aniCode;
 		this.Autor = Autor;
@@ -30,7 +30,7 @@ public class Libro {
 		this.editorial = editorial;
 		this.descripcion = descripcion;
 		this.cantEjemplares = cantEjemplares;
-		this.cantEjemplaresDisp = cantEjemplares;
+		this.cantEjemplaresDisp = cantEjemplaresDisp;
 		this.hayEjemplarDisponible = hayEjemplarDisponible;
 		this.codigoISBN = codigoISBN;
 		this.genero = genero;

@@ -13,10 +13,11 @@ public class Prestamo {
 	private Libro libro;
 	private ArrayList<Notificacion> notificaciones = new ArrayList<Notificacion>();
 
-	public Prestamo(int id, Date fechaDevolucion, Boolean devuelto, Usuario usuario, Libro libro) {
+	public Prestamo(int id, Date fechaDevolucion, Date fechaSolicitado, Boolean devuelto, Usuario usuario, Libro libro) {
 		
 		this.id = id;
 		this.fechaDevolucion = fechaDevolucion;
+		this.fechaSolicitado = fechaSolicitado;
 		this.devuelto = devuelto;
 		this.usuario = usuario;
 		this.libro = libro;
