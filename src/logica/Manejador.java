@@ -53,6 +53,15 @@ public class Manejador {
 		}
 	}
 
+	public Boolean login(int ci, String password) {
+		for (int i = 0; i < usuarios.size(); i++) {
+			if (usuarios.get(i).getCi() == ci && usuarios.get(i).getPassword().equals(password)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public int generarID(String obj) {
 		ResultSet rs;
 		int id = 0;
@@ -61,12 +70,12 @@ public class Manejador {
 			try {
 				s = con.createStatement();
 				rs = s.executeQuery("SELECT MAX(u.id) as \"id\" FROM Usuario u");
-				if(rs.next()) {
-					id = rs.getInt("id");										
+				if (rs.next()) {
+					id = rs.getInt("id");
 				} else {
-					id = 0;					
+					id = 0;
 				}
-				return id+1;					
+				return id + 1;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -75,10 +84,13 @@ public class Manejador {
 		case "prestamo":
 			try {
 				s = con.createStatement();
-				rs = s.executeQuery("SELECT MAX(p.id) FROM Prestamo p");
-				id = rs.getInt("id");
-				return id++;
-
+				rs = s.executeQuery("SELECT MAX(p.id) as \"id\" FROM Prestamo p");
+				if (rs.next()) {
+					id = rs.getInt("id");
+				} else {
+					id = 0;
+				}
+				return id + 1;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -163,6 +175,15 @@ public class Manejador {
 
 	public ArrayList<Libro> listarLibrosExistentes() {
 		return libros;
+	}
+
+	public Libro consultaLibro(String aniCode) {
+		for (int i = 0; i < libros.size(); i++) {
+			if (libros.get(i).getAniCode().equals(aniCode)) {
+				return libros.get(i);
+			}
+		}
+		return null;
 	}
 
 	public ArrayList<Prestamo> listarPrestamos() {
@@ -253,10 +274,11 @@ public class Manejador {
 
 		try {
 			s.executeUpdate(
-					"INSERT INTO Libro(aniCode, autor, yearPubl, nroEdicion, editorial, descripcion, cantEjemplares, hayEjemplarDisponible, codigoISBN, genero, imagUrl) VALUES('"
+					"INSERT INTO Libro(aniCode, autor, yearPubl, nroEdicion, editorial, descripcion, cantEjemplares, cantEjemplaresDisp, hayEjemplarDisponible, codigoISBN, genero, imagUrl, titulo) VALUES('"
 							+ aniCode + "', '" + Autor + "', " + yearPubl + ", " + nroEdicion + ", '" + editorial
-							+ "', '" + descripcion + "', " + cantEjemplares + ", " + hayEjemplarDisponible + ", '"
-							+ codigoISBN + "', '" + genero + "', '" + ImagURL + "')");
+							+ "', '" + descripcion + "', " + cantEjemplares + ", " + cantEjemplares + ", "
+							+ hayEjemplarDisponible + ", '" + codigoISBN + "', '" + genero + "', '" + ImagURL + "', '"
+							+ titulo + "');");
 			libros.add(libro);
 		} catch (SQLException e) {
 			throw e;
